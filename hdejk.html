@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Галерея с переключением миниатюр и больших изображений</title>
+<style>
+  body.light { background-color: #ffffff; color: #000000; }
+  body.dark { background-color: #333333; color: #ffffff; }
+
+  img { border: 3px solid #ccc; margin: 10px; cursor: pointer; }
+  .button { cursor: pointer; width: 50px; height: 50px; }
+
+  .theme-toggle {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    background-color: #444;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+
+  .theme-toggle:hover {
+    background-color: #666;
+  }
+</style>
+</head>
+
+<body class="light">
+
+<div style="text-align:center; padding-top:30px;">
+
+  <img src="images/back.jpg" class="button" onclick="changeTumbs(false)" alt="Назад" />
+  <img src="images/i1.jpg" name="1" onclick="openImage(this)" alt="Миниатюра 1" />
+  <img src="images/i2.jpg" name="2" onclick="openImage(this)" alt="Миниатюра 2" />
+  <img src="images/i3.jpg" name="3" onclick="openImage(this)" alt="Миниатюра 3" />
+  <img src="images/next.jpg" class="button" onclick="changeTumbs(true)" alt="Вперед" />
+</div>
+
+<div style="text-align:center; margin-top: 20px;">
+
+  <img src="images/back2.jpg" class="button" onclick="changeBigImage(false)" alt="Back kbig image" />
+  <img style="cursor:default;" src="images/i1_big.jpg" name="big" alt="Большое изображение" />
+  <img src="images/next2.jpg" class="button" onclick="changeBigImage(true)" alt="Next big image" />
+</div>
+
+<div style="text-align:center;">
+
+  <button class="theme-toggle" onclick="toggleTheme()">Переключить тему</button>
+</div>
+
+<script>
+ 
+  function openImage(pic) {
+    document.images["big"].src = "images/i" + pic.name + "_big.jpg";
+  }
+
+
+  function changeTumbs(next) {
+    const startIndex = next ? 3 : -3;
+    const lastImageIndex = document.images[3].name;
+
+    if ((next && lastImageIndex == 9) || (!next && document.images[1].name == 1)) {
+      for (let i = 1; i <= 3; i++) {
+        document.images[i].name = next ? i : i + 6;
+        document.images[i].src = "images/i" + document.images[i].name + ".jpg";
+      }
+    } else {
+      for (let i = 1; i <= 3; i++) {
+        document.images[i].name = parseInt(document.images[i].name) + startIndex;
+        document.images[i].src = "images/i" + document.images[i].name + ".jpg";
+      }
+    }
+    
+   
+    document.images["big"].src = "images/i" + document.images[1].name + "_big.jpg";
+  }
+
+ 
+  function changeBigImage(next) {
+    const bigImageNames = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    let currentBigIndex = bigImageNames.indexOf(document.images["big"].src.match(/i(\d+)_big\.jpg/)[1]);
+    
+    if (next) {
+      currentBigIndex = (currentBigIndex + 1) % bigImageNames.length;
+    } else {
+      currentBigIndex = (currentBigIndex - 1 + bigImageNames.length) % bigImageNames.length;
+    }
+
+    document.images["big"].src = "images/i" + bigImageNames[currentBigIndex] + "_big.jpg";
+  }
+
+  
+  function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle("dark");
+    body.classList.toggle("light");
+
+    const button = document.querySelector(".theme-toggle");
+    button.textContent = body.classList.contains("dark") ? "Светлая тема" : "Темная тема";
+  }
+</script>
+
+</body>
+</html>
